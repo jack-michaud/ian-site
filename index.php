@@ -1,23 +1,22 @@
-<?php 
 
-require_once 'vendor/rmccue/requests/library/Requests.php';
-Requests::register_autoloader();
-
-$response = Requests::get("http://api.tumblr.com/v2/blog/ian-gelman.tumblr.com/posts/?type=text&api_key=Ikq6zkk2fgBZe74S94oZSlqtmVk2kTpa4n5SKUUAHYNsiHhxkS");
-
-$json = json_decode($response->body);
-
-#var_dump($json);
-
-$posts = $json->response->posts;
-$number = rand(0, count($posts));
-
-
-?>
 
 <html>
 
 <title> Where's the dingle dangle </title>
+<script src="jquery-2.1.4.min.js"></script>
+<script>
+$.ajax({
+    url: "http://api.tumblr.com/v2/blog/ian-gelman.tumblr.com/posts/?type=text&api_key=Ikq6zkk2fgBZe74S94oZSlqtmVk2kTpa4n5SKUUAHYNsiHhxkS",
+    dataType: 'jsonp',
+    success: function(results){
+    	console.log(results.response.posts[1]);
+        var id = Math.floor(Math.random(0,results.response.posts.length-1));
+        $("#post").text(results.response.posts[id].summary);
+        $("#link").attr("href", results.response.posts[id].post_url);
+    }
+});
+
+</script>
 
 <style>
 
@@ -66,10 +65,10 @@ p{
 
 <body>
 	<div>
-		<p><?php  echo $posts[$number]->summary ?></p>
+		<p id="post"></p>
 	</div>
 	<div class="link">
-		<a href="<?php echo $posts[$number]->short_url ?>">src</a> 
+		<a id="link" href="">src</a> 
 	</div>
 </body>
 
